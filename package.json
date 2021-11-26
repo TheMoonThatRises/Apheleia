@@ -1,0 +1,27 @@
+{
+  "name": "discordapiextras",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RangerEmerald/DiscordApiExtras.git"
+  },
+  "author": "",
+  "license": "AGPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/RangerEmerald/DiscordApiExtras/issues"
+  },
+  "homepage": "https://github.com/RangerEmerald/DiscordApiExtras#readme",
+  "dependencies": {
+    "axios": "^0.24.0",
+    "color-name-list": "^8.36.0",
+    "ws": "^8.3.0"
+  },
+  "devDependencies": {
+    "dotenv": "^10.0.0"
+  }
+}
