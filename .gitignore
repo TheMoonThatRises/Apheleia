@@ -1,0 +1,8 @@
+# Node modules
+node_modules
+
+# Testing Variables
+.env
+
+# Miscellaneous
+.DS_Store
