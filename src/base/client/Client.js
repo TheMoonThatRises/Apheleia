@@ -8,6 +8,10 @@ const EmitManager = require("./EmitManager");
 const Message = require("../message/Message");
 
 class Client extends Base {
+    static READY = 'ready';
+    static GUILD_CREATE = 'guildCreate';
+    static MESSAGE_CREATE = 'messageCreate';
+    
     constructor(token = "", Intents = []) {
         if (Intents.length <= 0) throw new Error("Intents requried.");
         else if (!token) throw new Error("Token not provided.");

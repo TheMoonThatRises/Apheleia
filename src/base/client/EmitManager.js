@@ -1,10 +1,6 @@
 'use strict';
 
 class EmitManager {
-    static READY = 'ready';
-    static GUILD_CREATE = 'guildCreate';
-    static MESSAGE_CREATE = 'messageCreate';
-
     static async manage(data, client, callback) {
         const options = data.d;
         const modified = await callback(options);
