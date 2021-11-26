@@ -1,5 +1,5 @@
 {
-  "name": "discordapiextras",
+  "name": "apheleia",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/RangerEmerald/DiscordApiExtras.git"
+    "url": "git+https://github.com/RangerEmerald/Apheleia.git"
   },
   "author": "",
   "license": "AGPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/RangerEmerald/DiscordApiExtras/issues"
+    "url": "https://github.com/RangerEmerald/Apheleia/issues"
   },
-  "homepage": "https://github.com/RangerEmerald/DiscordApiExtras#readme",
+  "homepage": "https://github.com/RangerEmerald/Apheleia#readme",
   "dependencies": {
     "axios": "^0.24.0",
     "color-name-list": "^8.36.0",
