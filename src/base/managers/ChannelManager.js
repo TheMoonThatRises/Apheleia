@@ -2,10 +2,14 @@
 
 const Manager = require("../Manager");
 const Embed = require("../message/Embed");
+const Message = require("../message/Message");
+const CacheArray = require("../modifiers/CacheArray");
 
 class ChannelManager extends Manager {
-    constructor(channel, token) {
+    constructor(channel, messageCacheSize, token) {
         super(channel, token);
+
+        this.messageCache = new CacheArray(messageCacheSize);
     }
 
     async send(...message) {
@@ -13,7 +17,8 @@ class ChannelManager extends Manager {
             "content": "",
             "embeds": [
                 
-            ]
+            ],
+            message_reference: this.replyContent ?? null
         }
 
         if (typeof message == "object" && message.content) data = message;
@@ -27,7 +32,7 @@ class ChannelManager extends Manager {
 
         const sendReq = {
             method: 'post',
-            url: this.baseHTTPURL + `channels/${this.id}/messages`,
+            url: this.baseHTTPURL + `channels/${(!(this instanceof Message)) ? this.id : this.channel.id}/messages`,
             headers: this.headers,
             data: data
         };

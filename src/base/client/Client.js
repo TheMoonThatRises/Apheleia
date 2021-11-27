@@ -10,13 +10,15 @@ const Intents = require("./Intents");
 const EmitTypes = require("./EmitTypes");
 
 class Client extends Base {
-    constructor(token = "", options = {"intents": [Intents.ALL], "forceCacheMembersOnJoin": true, "forceCacheMemberOnMessage": false, "forceCacheGuildOnJoin": true, "forceCacheChannelOnJoin": true, "forceCacheChannelOnMake": false, "forceWaitGuildCache": false, "oauth2CacheSelf": false}) {
+    static clientOptions = {"intents": [Intents.ALL], "forceCacheMembersOnJoin": true, "forceCacheMemberOnMessage": false, "forceCacheGuildOnJoin": true, "forceCacheChannelOnJoin": true, "forceCacheChannelOnMake": false, "forceWaitGuildCache": false, "oauth2CacheSelf": false, "messageCacheSize": 10, "cacheBotMessage": true};
+
+    constructor(token = "", options = Client.clientOptions) {
         if (!token) throw new Error("Token not provided.");
         else if (typeof token != "string") throw new Error("Token must be a string.");
 
         super(token);
 
-        this.options = Object.assign({"intents": [Intents.ALL], "forceCacheMembersOnJoin": true, "forceCacheMemberOnMessage": false, "forceCacheGuildOnJoin": true, "forceCacheChannelOnJoin": true, "forceCacheChannelOnMake": false, "forceWaitGuildCache": false, "oauth2CacheSelf": false}, options);
+        this.options = Object.assign(Client.clientOptions, options);
 
         if (this.options.intents.length <= 0) throw new Error("Intents requried.");
 
@@ -38,7 +40,7 @@ class Client extends Base {
         this.on("GUILD_CREATE", data => {
             EmitManager.manage(data, this, guild => {
                 this.guilds.set(guild.id, new GuildManager(guild, this.token));
-                guild.channels.forEach(channel =>  this.channels.set(channel.id, new ChannelManager(channel, this.token)));
+                guild.channels.forEach(channel =>  this.channels.set(channel.id, new ChannelManager(channel, this.options.messageCacheSize, this.token)));
                 guild.members.forEach(member => (!this.users.get(member.user.id) ? this.users.set(member.user.id, new UserManager(member.user, this.token)) : null));  
                 return guild;  
             }); 
@@ -46,7 +48,9 @@ class Client extends Base {
 
         this.on("MESSAGE_CREATE", data =>
             EmitManager.manage(data, this, message => {
-                return new Message(message, this.guilds.get(message.guild_id), this.channels.get(message.channel_id), this.token)
+                let modifiedMessage = new Message(message, this, this.token);
+                if (this.options.cacheBotMessage || !modifiedMessage.author.bot) this.channels.get(message.channel_id).messageCache.push(modifiedMessage);
+                return modifiedMessage;
             })
         );
     }
