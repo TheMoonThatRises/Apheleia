@@ -3,12 +3,22 @@
 const EventEmitter = require('events');
 
 class Base extends EventEmitter {
-    constructor(token) {
+    constructor(token, baseEndpoint = "") {
         super();
 
+        const discordApiVersion = 9;
+
         Object.defineProperties(this, {
+            "discordApiVersion": {
+                "value": discordApiVersion,
+                "writable": false
+            },
             "baseHTTPURL": {
-                "value": "https://discord.com/api/v9/",
+                "value": `https://discord.com/api/v${discordApiVersion}/`,
+                "writable": false
+            },
+            "selfBaseHTTPURL": {
+                "value": `https://discord.com/api/v${discordApiVersion}/` + baseEndpoint,
                 "writable": false
             },
             "axios": {
@@ -30,6 +40,22 @@ class Base extends EventEmitter {
                 "writable": false
             }
         });
+    }
+
+    async api(endpoint = "", data = {}, method = "get") {
+        const sendReq = {
+            method: method,
+            url: this.selfBaseHTTPURL + endpoint,
+            headers: this.headers
+        };
+
+        if (Object.keys(data).length > 0) sendReq.data = data;
+
+        return await this.axios(sendReq)
+            .catch(err => {
+                if (err.response.status == 429) setTimeout(() => this.send(data), err.response.data.retry_after);
+                else throw new Error(`Unable to send api request:\n\n${err}`);
+            });
     }
 }
 

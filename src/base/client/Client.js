@@ -10,7 +10,18 @@ const Intents = require("./Intents");
 const EmitTypes = require("./EmitTypes");
 
 class Client extends Base {
-    static clientOptions = {"intents": [Intents.ALL], "forceCacheMembersOnJoin": true, "forceCacheMemberOnMessage": false, "forceCacheGuildOnJoin": true, "forceCacheChannelOnJoin": true, "forceCacheChannelOnMake": false, "forceWaitGuildCache": false, "oauth2CacheSelf": false, "messageCacheSize": 10, "cacheBotMessage": true};
+    static clientOptions = {
+        "intents": [Intents.ALL], 
+        "forceCacheMembersOnJoin": true, 
+        "forceCacheMemberOnMessage": false, 
+        "forceCacheGuildOnJoin": true, 
+        "forceCacheChannelOnJoin": true, 
+        "forceCacheChannelOnMake": false, 
+        "forceWaitGuildCache": false, 
+        "oauth2CacheSelf": false, 
+        "messageCacheSize": 10, 
+        "cacheBotMessage": true
+    };
 
     constructor(token = "", options = Client.clientOptions) {
         if (!token) throw new Error("Token not provided.");
@@ -30,7 +41,7 @@ class Client extends Base {
 
         this.on("READY", data =>
             EmitManager.manage(data, this, async options => {
-                if (this.options.oauth2CacheSelf) Object.assign(options.user, (await this.api('oauth2/applications/@me')).data)
+                if (this.options.oauth2CacheSelf) Object.assign(options.user, (await this.api('oauth2/applications/@me')).data);
                 this.user = new UserManager(options.user, this.token);
                 this.sessionID = options.session_id;
                 return options;
@@ -39,7 +50,7 @@ class Client extends Base {
 
         this.on("GUILD_CREATE", data => {
             EmitManager.manage(data, this, guild => {
-                this.guilds.set(guild.id, new GuildManager(guild, this.token));
+                this.guilds.set(guild.id, new GuildManager(guild, this));
                 guild.channels.forEach(channel =>  this.channels.set(channel.id, new ChannelManager(channel, this.options.messageCacheSize, this.token)));
                 guild.members.forEach(member => (!this.users.get(member.user.id) ? this.users.set(member.user.id, new UserManager(member.user, this.token)) : null));  
                 return guild;  
@@ -48,7 +59,7 @@ class Client extends Base {
 
         this.on("MESSAGE_CREATE", data =>
             EmitManager.manage(data, this, message => {
-                let modifiedMessage = new Message(message, this, this.token);
+                let modifiedMessage = new Message(message, this);
                 if (this.options.cacheBotMessage || !modifiedMessage.author.bot) this.channels.get(message.channel_id).messageCache.push(modifiedMessage);
                 return modifiedMessage;
             })
@@ -65,7 +76,7 @@ class Client extends Base {
         const gatewayResponse = await this.axios(getGateway)
             .catch(err => { throw new Error(`Getting gateway error:\n\n${err}`) });
 
-        this.WSSURL = `${gatewayResponse.data.url}/?v=9&encoding=json`;
+        this.WSSURL = `${gatewayResponse.data.url}/?v=${this.discordApiVersion}&encoding=json`;
 
         this.connection = new this.ws(this.WSSURL);
 
@@ -139,22 +150,6 @@ class Client extends Base {
                 "seq": this.seq
             }
         }));
-    }
-
-    async api(endpoint = "", data = {}, method = "get") {
-        const sendReq = {
-            method: method,
-            url: this.baseHTTPURL + endpoint,
-            headers: this.headers
-        };
-
-        sendReq ||= data;
-
-        return await this.axios(sendReq)
-            .catch(err => {
-                if (err.response.data.retry_after) setTimeout(() => this.send(data), err.response.data.retry_after);
-                else throw new Error(`Unable to send message:\n\n${err}`);
-            });
     }
 }
 
