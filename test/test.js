@@ -5,15 +5,18 @@ const client = new Client(process.env.TESTTOKEN, {"oauth2CacheSelf": true, "cach
 
 client.on(EmitTypes.READY, async () => {
     console.log(`${client.user.tag} has logged in.`);
-    // console.log(await client.api('oauth2/applications/@me'));
 });
 
 client.on(EmitTypes.MESSAGE_CREATE, message => {
-    if (!message.author.bot && message.content == "t!hello") message.reply(new Embed().setTitle("Hello user").setAuthor(message.author.tag, message.author.avatarURL).setDescription("Hello user").setFooter("Hello hello hello").setTimestamp().setColor("green").setThumbnail(client.user.avatarURL));
+    if (!message.author.bot && message.content == "t!hello") {
+        message.reply(new Embed().setTitle("Hello user").setAuthor(message.author.tag, message.author.avatarURL).setDescription("Hello user").setFooter("Hello hello hello").setTimestamp().setColor("green").setThumbnail(client.user.avatarURL));
+        message.delete();
+    }
+
 });
 
 client.on(EmitTypes.MESSAGE_DELETE, message => {
-    console.log(message)
+    // console.log(message)
 });
 
 client.on(EmitTypes.CHANNEL_PINS_UPDATE, pins => console.log(pins));
