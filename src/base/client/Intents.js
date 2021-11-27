@@ -17,6 +17,7 @@ class Intents {
     static DIRECT_MESSAGE_REACTIONS = 1 << 13;
     static DIRECT_MESSAGE_TYPING = 1 << 14;
     static GUILD_SCHEDULED_EVENTS = 1 << 16;
+    static ALL = 32767;
 }
 
 module.exports = Intents;
