@@ -6,29 +6,29 @@ const UserManager = require("../managers/UserManager");
 const GuildManager = require("../managers/GuildManager");
 const EmitManager = require("./EmitManager");
 const Message = require("../message/Message");
+const Intents = require("./Intents");
+const EmitTypes = require("./EmitTypes");
 
 class Client extends Base {
-    static READY = 'ready';
-    static GUILD_CREATE = 'guildCreate';
-    static MESSAGE_CREATE = 'messageCreate';
-    
-    constructor(token = "", Intents = []) {
-        if (Intents.length <= 0) throw new Error("Intents requried.");
-        else if (!token) throw new Error("Token not provided.");
+    constructor(token = "", options = {"intents": [Intents.ALL], "forceCacheMembersOnJoin": true, "forceCacheMemberOnMessage": false, "forceCacheGuildOnJoin": true, "forceCacheChannelOnJoin": true, "forceCacheChannelOnMake": false, "forceWaitGuildCache": false, "oauth2CacheSelf": false}) {
+        if (!token) throw new Error("Token not provided.");
         else if (typeof token != "string") throw new Error("Token must be a string.");
 
         super(token);
 
-        this.intents = [...Intents].reduce((a, b) => a + b);
+        this.options = Object.assign({"intents": [Intents.ALL], "forceCacheMembersOnJoin": true, "forceCacheMemberOnMessage": false, "forceCacheGuildOnJoin": true, "forceCacheChannelOnJoin": true, "forceCacheChannelOnMake": false, "forceWaitGuildCache": false, "oauth2CacheSelf": false}, options);
 
-        this.token = token;
+        if (this.options.intents.length <= 0) throw new Error("Intents requried.");
+
+        this.options.intents = Number(this.options.intents.reduce((a, b) => a + b));
 
         this.guilds = new Map();
         this.users = new Map();
         this.channels = new Map();
 
         this.on("READY", data =>
-            EmitManager.manage(data, this, options => {
+            EmitManager.manage(data, this, async options => {
+                if (this.options.oauth2CacheSelf) Object.assign(options.user, (await this.api('oauth2/applications/@me')).data)
                 this.user = new UserManager(options.user, this.token);
                 this.sessionID = options.session_id;
                 return options;
@@ -69,7 +69,8 @@ class Client extends Base {
             const data = JSON.parse(message.data);
             switch (data.op) {
                 case 0:
-                    this.emit(data.t, data);
+                    let modifiedEmit = (!this._events[data.t]) ? EmitTypes[data.t] : data.t;
+                    this.emit(modifiedEmit, (modifiedEmit != data.t) ? data.d : data);
                     this.seq = data.s;
                     break;
                 case 7:
@@ -114,7 +115,7 @@ class Client extends Base {
             "op": 2,
             "d": {
               "token": this.token,
-              "intents": this.intents,
+              "intents": this.options.intents,
               "compress": false,
               "properties": {
                 "$os": process.platform,
@@ -134,6 +135,22 @@ class Client extends Base {
                 "seq": this.seq
             }
         }));
+    }
+
+    async api(endpoint = "", data = {}, method = "get") {
+        const sendReq = {
+            method: method,
+            url: this.baseHTTPURL + endpoint,
+            headers: this.headers
+        };
+
+        sendReq ||= data;
+
+        return await this.axios(sendReq)
+            .catch(err => {
+                if (err.response.data.retry_after) setTimeout(() => this.send(data), err.response.data.retry_after);
+                else throw new Error(`Unable to send message:\n\n${err}`);
+            });
     }
 }
 
