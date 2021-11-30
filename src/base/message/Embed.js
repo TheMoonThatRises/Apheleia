@@ -38,8 +38,7 @@ class Embed {
     }
 
     // Function from https://stackoverflow.com/a/5717133
-    // eslint-disable-next-line class-methods-use-this
-    validURL(str) {
+    static validURL(str) {
         const pattern = new RegExp("^(https?:\\/\\/)?" +
           "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" +
           "((\\d{1,3}\\.){3}\\d{1,3}))" +
@@ -81,7 +80,7 @@ class Embed {
     }
 
     setImage(imageUrl = "", proxyUrl = "", width = 0, height = 0) {
-        if (!this.validURL(imageUrl) || (!this.validURL(proxyUrl) && proxyUrl != "")) throw new Error(`${(this.validURL(imageUrl) ? "ProxyUrl" : "ImageUrl")} is not a valid url!`);
+        if (!Embed.validURL(imageUrl) || (!Embed.validURL(proxyUrl) && proxyUrl != "")) throw new Error(`${(Embed.validURL(imageUrl) ? "ProxyUrl" : "ImageUrl")} is not a valid url!`);
         this.image.url = imageUrl;
         this.image.proxy_url = proxyUrl; // eslint-disable-line camelcase
         this.image.width = width;
@@ -90,7 +89,7 @@ class Embed {
     }
 
     setThumbnail(imageUrl = "", proxyUrl = "", width = 0, height = 0) {
-        if (!this.validURL(imageUrl) || (!this.validURL(proxyUrl) && proxyUrl != "")) throw new Error(`${(this.validURL(imageUrl) ? "ProxyUrl" : "ImageUrl")} is not a valid url!`);
+        if (!Embed.validURL(imageUrl) || (!Embed.validURL(proxyUrl) && proxyUrl != "")) throw new Error(`${(Embed.validURL(imageUrl) ? "ProxyUrl" : "ImageUrl")} is not a valid url!`);
         this.thumbnail.url = imageUrl;
         this.thumbnail.proxy_url = proxyUrl; // eslint-disable-line camelcase
         this.thumbnail.width = width;
@@ -99,8 +98,8 @@ class Embed {
     }
 
     setAuthor(name = "", iconUrl = "", link = "", proxyLink = "") {
-        if (!this.validURL(iconUrl) && iconUrl != "") throw new Error("IconUrl is not a valid url!");
-        else if ((!this.validURL(link) && link != "") || (!this.validURL(proxyLink) && proxyLink != "")) throw new Error(`${(this.validURL(link)) ? "ProxyLink" : "Link"} is not a valid url!`);
+        if (!Embed.validURL(iconUrl) && iconUrl != "") throw new Error("IconUrl is not a valid url!");
+        else if ((!Embed.validURL(link) && link != "") || (!Embed.validURL(proxyLink) && proxyLink != "")) throw new Error(`${(Embed.validURL(link)) ? "ProxyLink" : "Link"} is not a valid url!`);
         this.author.name = name;
         this.author.icon_url = iconUrl; // eslint-disable-line camelcase
         this.author.url = link;
@@ -109,7 +108,7 @@ class Embed {
     }
 
     setFooter(text = "", iconUrl = "", proxyIconUrl = "") {
-        if ((!this.validURL(iconUrl) && iconUrl != "") || (!this.validURL(proxyIconUrl) && proxyIconUrl != "")) throw new Error(`${(this.validURL(iconUrl) ? "ProxyIconUrl" : "IconUrl")} is not a valid url!`);
+        if ((!Embed.validURL(iconUrl) && iconUrl != "") || (!Embed.validURL(proxyIconUrl) && proxyIconUrl != "")) throw new Error(`${(Embed.validURL(iconUrl) ? "ProxyIconUrl" : "IconUrl")} is not a valid url!`);
         this.footer.text = text;
         this.footer.icon_url = iconUrl; // eslint-disable-line camelcase
         this.footer.proxy_icon_url = proxyIconUrl; // eslint-disable-line camelcase
