@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-const Base = require('./Base');
+const Base = require("./Base");
 
 class Manager extends Base {
     constructor(object, token, baseEndpoint = "") {

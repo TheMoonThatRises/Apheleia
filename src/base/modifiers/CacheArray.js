@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 class CacheArray extends Array {
     constructor(cacheSize) {
@@ -11,7 +11,7 @@ class CacheArray extends Array {
         super.push(item);
 
         if (this.length > this.cacheSize) this.pop();
-        
+
         return this;
     }
 }
