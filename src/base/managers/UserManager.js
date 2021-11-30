@@ -1,33 +1,33 @@
-'use strict';
+"use strict";
 
 const Manager = require("../Manager");
 const RoleManager = require("./RoleManager");
 
 class UserManager extends Manager {
-    constructor(user, token, guildId = "") {
-        let guildUser;
+    constructor(userObject, token, guildId = "") {
+        let guildUser = null;
+        let {user} = userObject;
 
-        if (guildId) {
-            guildUser = user;
-            user = user.user;
-        }
+        if (guildId) guildUser = user;
+        else user = userObject;
 
-        super(user, token);
-        
+        super(userObject, token);
+
         this.tag = `${this.username}#${this.discriminator}`;
-        
+
         if (this.avatar || this.avatar == null) {
             this.avatarURL = "https://cdn.discordapp.com/";
             if (this.avatar == null) this.avatarURL += `embed/avatars/${this.discriminator % 5}.png`;
             else if (!guildUser) this.avatarURL += `avatars/${this.id}/${this.avatar}.png`;
             else this.avatarURL += `guilds/${guildId}/users/${this.id}/avatars/${this.avatar}.png`;
         }
-        
+
         if (guildUser) {
-            this.roles = new Array();
+            this.roles = [];
             this.mute = guildUser.mute;
-            this.joined_at = guildUser.joined_at;
-            this.hoisted_role = guildUser.hoisted_role;
+            // Camel-cases will be removed later
+            this.joined_at = guildUser.joined_at; // eslint-disable-line camelcase
+            this.hoisted_role = guildUser.hoisted_role; // eslint-disable-line camelcase
             this.deaf = guildUser.deaf;
 
             guildUser.roles.forEach(role => this.roles.push(new RoleManager(role)));

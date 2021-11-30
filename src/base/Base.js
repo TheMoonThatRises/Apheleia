@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-const EventEmitter = require('events');
+const EventEmitter = require("node:events");
 
 class Base extends EventEmitter {
     constructor(token, baseEndpoint = "") {
@@ -22,11 +22,11 @@ class Base extends EventEmitter {
                 "writable": false
             },
             "axios": {
-                "value": require('axios'),
+                "value": require("axios"),
                 "writable": false
             },
             "ws": {
-                "value": require('ws'),
+                "value": require("ws"),
                 "writable": false
             },
             "headers": {

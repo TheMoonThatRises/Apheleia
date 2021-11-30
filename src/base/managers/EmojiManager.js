@@ -1,10 +1,12 @@
-'use strict';
+/* eslint-disable no-useless-constructor */
+// StickerManager will have functions but will add later
+"use strict";
 
 const Manager = require("../Manager");
 
 class EmojiManager extends Manager {
-    constructor(emoji, token) {
-        super(emoji, token);
+    constructor(emojiObject, token) {
+        super(emojiObject, token);
     }
 }
 
