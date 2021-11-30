@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 const Manager = require("../Manager");
 const ChannelManager = require("./ChannelManager");
@@ -12,8 +12,8 @@ class GuildManager extends Manager {
     /**
      * Complete documentation of the guild data structure: https://discord.com/developers/docs/resources/guild#guild-object-guild-structure
      */
-    constructor(guild, client) {
-        super(guild, client.token);
+    constructor(guildObject, client) {
+        super(guildObject, client.token);
 
         this.roles = new Map();
         this.members = new Map();
@@ -22,11 +22,11 @@ class GuildManager extends Manager {
         this.stickers = new Map();
 
 
-        guild.roles.forEach(role => this.roles.set(role.id, new RoleManager(role, this.token)));
-        guild.members.forEach(member => this.members.set(member.user.id, new UserManager(member, this.token, guild.id)));
-        guild.channels.forEach(channel => this.channels.set(channel.id, new ChannelManager(channel, client.options.messageCacheSize, this.token)));
-        guild.emojis.forEach(emoji => this.emojis.set(emoji.id, new EmojiManager(emoji, this.token)));
-        guild.stickers.forEach(sticker => this.stickers.set(sticker.id, new StickerManager(sticker, this.token)));
+        guildObject.roles.forEach(role => this.roles.set(role.id, new RoleManager(role, this.token)));
+        guildObject.members.forEach(member => this.members.set(member.user.id, new UserManager(member, this.token, guildObject.id)));
+        guildObject.channels.forEach(channel => this.channels.set(channel.id, new ChannelManager(channel, client.options.messageCacheSize, this.token)));
+        guildObject.emojis.forEach(emoji => this.emojis.set(emoji.id, new EmojiManager(emoji, this.token)));
+        guildObject.stickers.forEach(sticker => this.stickers.set(sticker.id, new StickerManager(sticker, this.token)));
     }
 }
 

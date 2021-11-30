@@ -1,6 +1,6 @@
-'use strict';
+"user strict";
 
-const namedColors = require('color-name-list');
+const namedColors = require("color-name-list");
 
 class Embed {
     constructor(embed = {}) {
@@ -28,7 +28,7 @@ class Embed {
             "url": "",
             "icon_url": "",
             "proxy_icon_url": ""
-        }
+        };
         this.footer = {
             "text": "",
             "icon_url": "",
@@ -38,14 +38,15 @@ class Embed {
     }
 
     // Function from https://stackoverflow.com/a/5717133
+    // eslint-disable-next-line class-methods-use-this
     validURL(str) {
-        var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-          '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
-          '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-          '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-          '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-          '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
-        return !!pattern.test(str);
+        const pattern = new RegExp("^(https?:\\/\\/)?" +
+          "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" +
+          "((\\d{1,3}\\.){3}\\d{1,3}))" +
+          "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" +
+          "(\\?[;&a-z\\d%_.~+=-]*)?" +
+          "(\\#[-a-z\\d_]*)?$", "iu");
+        return Boolean(pattern.test(str));
     }
 
     setTitle(title = "") {
@@ -59,8 +60,9 @@ class Embed {
     }
 
     setColor(color = "") {
-        if (!color.startsWith("#")) color = namedColors.find(fColor => fColor.name.toLowerCase() == color.toLowerCase()).hex;
-        this.color = parseInt(color.replace(/^#/, ''), 16);
+        let findColor = color;
+        if (!color.startsWith("#")) findColor = namedColors.find(fColor => fColor.name.toLowerCase() == findColor.toLowerCase()).hex;
+        this.color = parseInt(findColor.replace(/^#/u, ""), 16);
         return this;
     }
 
@@ -81,7 +83,7 @@ class Embed {
     setImage(imageUrl = "", proxyUrl = "", width = 0, height = 0) {
         if (!this.validURL(imageUrl) || (!this.validURL(proxyUrl) && proxyUrl != "")) throw new Error(`${(this.validURL(imageUrl) ? "ProxyUrl" : "ImageUrl")} is not a valid url!`);
         this.image.url = imageUrl;
-        this.image.proxy_url = proxyUrl;
+        this.image.proxy_url = proxyUrl; // eslint-disable-line camelcase
         this.image.width = width;
         this.image.height = height;
         return this;
@@ -90,7 +92,7 @@ class Embed {
     setThumbnail(imageUrl = "", proxyUrl = "", width = 0, height = 0) {
         if (!this.validURL(imageUrl) || (!this.validURL(proxyUrl) && proxyUrl != "")) throw new Error(`${(this.validURL(imageUrl) ? "ProxyUrl" : "ImageUrl")} is not a valid url!`);
         this.thumbnail.url = imageUrl;
-        this.thumbnail.proxy_url = proxyUrl;
+        this.thumbnail.proxy_url = proxyUrl; // eslint-disable-line camelcase
         this.thumbnail.width = width;
         this.thumbnail.height = height;
         return this;
@@ -100,17 +102,17 @@ class Embed {
         if (!this.validURL(iconUrl) && iconUrl != "") throw new Error("IconUrl is not a valid url!");
         else if ((!this.validURL(link) && link != "") || (!this.validURL(proxyLink) && proxyLink != "")) throw new Error(`${(this.validURL(link)) ? "ProxyLink" : "Link"} is not a valid url!`);
         this.author.name = name;
-        this.author.icon_url = iconUrl;
+        this.author.icon_url = iconUrl; // eslint-disable-line camelcase
         this.author.url = link;
-        this.author.proxy_icon_url = proxyLink;
+        this.author.proxy_icon_url = proxyLink; // eslint-disable-line camelcase
         return this;
     }
 
     setFooter(text = "", iconUrl = "", proxyIconUrl = "") {
         if ((!this.validURL(iconUrl) && iconUrl != "") || (!this.validURL(proxyIconUrl) && proxyIconUrl != "")) throw new Error(`${(this.validURL(iconUrl) ? "ProxyIconUrl" : "IconUrl")} is not a valid url!`);
         this.footer.text = text;
-        this.footer.icon_url = iconUrl;
-        this.footer.proxy_icon_url = proxyIconUrl;
+        this.footer.icon_url = iconUrl; // eslint-disable-line camelcase
+        this.footer.proxy_icon_url = proxyIconUrl; // eslint-disable-line camelcase
         return this;
     }
 
