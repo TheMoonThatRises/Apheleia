@@ -154,6 +154,8 @@ class Client extends Base {
             }
         }));
     }
+
+    // Client action functions
 }
 
 module.exports = Client;
