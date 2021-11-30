@@ -30,8 +30,6 @@ class UserManager extends Manager {
 
             userObject.roles.forEach(role => this.roles.push(new RoleManager(role)));
         } else if (this.owner) this.owner = new UserManager(this.owner, this.token);
-
-        console.log(this);
     }
 }
 
