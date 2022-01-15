@@ -5,7 +5,8 @@ const Base = require("../Base");
 const UserManager = require("../managers/UserManager");
 const GuildManager = require("../managers/GuildManager");
 const EmitManager = require("./EmitManager");
-const Message = require("../message/Message");
+const Message = require("../message/messages/Message");
+const ApplicationManager = require("../managers/ApplicationManager");
 const Intents = require("./Intents");
 const EmitTypes = require("./EmitTypes");
 
@@ -16,17 +17,14 @@ class Client extends Base {
         "forceCacheMemberOnMessage": false,
         "forceCacheGuildOnJoin": true,
         "forceCacheChannelOnJoin": true,
-        "forceCacheChannelOnMake": false,
-        "forceWaitGuildCache": false,
+        "forceCacheChannelOnMake": true,
         "oauth2CacheSelf": false,
         "messageCacheSize": 10,
-        "cacheBotMessage": true
+        "cacheBotMessage": false,
+        "forceCacheApplicationCommands": true
     };
 
     constructor(token = "", options = Client.clientOptions) {
-        if (!token) throw new Error("Token not provided.");
-        else if (typeof token != "string") throw new Error("Token must be a string.");
-
         super(token);
 
         this.options = Object.assign(Client.clientOptions, options);
@@ -39,27 +37,7 @@ class Client extends Base {
         this.users = new Map();
         this.channels = new Map();
 
-        this.on("READY", data => EmitManager.manage(data, this, async ready => {
-            if (this.options.oauth2CacheSelf) Object.assign(ready.user, (await this.api("oauth2/applications/@me").data));
-            this.user = new UserManager(ready.user, this.token);
-            this.sessionID = ready.session_id;
-            return ready;
-        }));
-
-        this.on("GUILD_CREATE", data => {
-            EmitManager.manage(data, this, guild => {
-                this.guilds.set(guild.id, new GuildManager(guild, this));
-                guild.channels.forEach(channel => this.channels.set(channel.id, new ChannelManager(channel, this.options.messageCacheSize, this.token)));
-                guild.members.forEach(member => (!this.users.get(member.user.id) ? this.users.set(member.user.id, new UserManager(member.user, this.token)) : null));
-                return guild;
-            });
-        });
-
-        this.on("MESSAGE_CREATE", data => EmitManager.manage(data, this, message => {
-            const modifiedMessage = new Message(message, this);
-            if (this.options.cacheBotMessage || !modifiedMessage.author.bot) this.channels.get(message.channel_id).messageCache.push(modifiedMessage);
-            return modifiedMessage;
-        }));
+        this.modifiedListeners();
     }
 
     async login() {
@@ -156,6 +134,70 @@ class Client extends Base {
     }
 
     // Client action functions
+
+    modifiedListeners() {
+        this.on("READY", data => EmitManager.manage(data, this, async ready => {
+            if (this.options.oauth2CacheSelf) Object.assign(ready.user, (await this.api("oauth2/applications/@me").data));
+
+            this.user = new UserManager(ready.user, this.token);
+            this.sessionID = ready.session_id;
+            this.applications = new ApplicationManager(this.token, ready.user.id);
+
+            if (this.options.forceCacheApplicationCommands) {
+                const globalCommands = (await this.api(this.applications.selfBaseHTTPURL + "commands")).data;
+                await globalCommands.forEach(command => this.applications.cache.set(command.id, command));
+
+                this.guilds.forEach(async guild => {
+                    this.applications.guilds.set(guild.id, new Map());
+                    const guildCommands = (await this.api(this.applications.selfBaseHTTPURL + `guilds/${guild.id}/commands`)).data;
+                    await guildCommands.forEach(command => this.applications.guilds.get(guild.id).set(command.id, command));
+                });
+            }
+
+            return ready;
+        }));
+
+        this.on("GUILD_CREATE", data => EmitManager.manage(data, this, guild => {
+            if (this.options.forceCacheGuildOnJoin) this.guilds.set(guild.id, new GuildManager(guild, this));
+            if (this.options.forceCacheChannelOnJoin) guild.channels.forEach(channel => this.channels.set(channel.id, new ChannelManager(channel, this.options.messageCacheSize, this.token)));
+            if (this.options.forceCacheMembersOnJoin) guild.members.forEach(member => (!this.users.get(member.user.id) ? this.users.set(member.user.id, new UserManager(member.user, this.token)) : null));
+            return guild;
+        }));
+
+        this.on("MESSAGE_CREATE", data => EmitManager.manage(data, this, message => {
+            const modifiedMessage = new Message(message, this);
+            if (this.options.cacheBotMessage || !modifiedMessage.author.bot) this.channels.get(message.channel_id).messageCache.push(modifiedMessage);
+            return modifiedMessage;
+        }));
+
+        this.on("GUILD_MEMBER_ADD", data => EmitManager.manage(data, this, member => {
+            const modifiedMember = new UserManager(member, this.token, this.member.guild.id);
+
+            if (this.options.forceCacheMembersOnJoin) this.users.set(modifiedMember.id, modifiedMember);
+
+            return modifiedMember;
+        }));
+
+        this.on("CHANNEL_CREATE", data => EmitManager.manage(data, this, channel => {
+            const modifiedChannel = new ChannelManager(channel, this.options.messageCacheSize, this.token);
+
+            if (this.options.forceCacheChannelOnMake) {
+                this.channels.set(modifiedChannel.id, modifiedChannel);
+                this.guilds.get(modifiedChannel.guild_id).channels.set(modifiedChannel.id, modifiedChannel);
+            }
+
+            return modifiedChannel;
+        }));
+
+        this.on("INTERACTION_CREATE", data => EmitManager.manage(data, this, interaction => {
+            interaction.member = new UserManager(interaction.member, this.token, interaction.guild_id);
+            interaction.channel = this.channels.get(interaction.channel_id);
+            interaction.guild = this.guilds.get(interaction.guild_id);
+            if (interaction.message) interaction.message = new Message(interaction.message, this);
+
+            return interaction;
+        }));
+    }
 }
 
 module.exports = Client;

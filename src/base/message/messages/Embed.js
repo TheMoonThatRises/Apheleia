@@ -34,17 +34,19 @@ class Embed {
             "icon_url": "",
             "proxy_icon_url": ""
         };
+
         Object.assign(this, embed);
     }
 
     // Function from https://stackoverflow.com/a/5717133
     static validURL(str) {
+        // eslint-disable-next-line require-unicode-regexp
         const pattern = new RegExp("^(https?:\\/\\/)?" +
-          "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" +
-          "((\\d{1,3}\\.){3}\\d{1,3}))" +
-          "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" +
-          "(\\?[;&a-z\\d%_.~+=-]*)?" +
-          "(\\#[-a-z\\d_]*)?$", "iu");
+            "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" +
+            "((\\d{1,3}\\.){3}\\d{1,3}))" +
+            "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" +
+            "(\\?[;&a-z\\d%_.~+=-]*)?" +
+            "(\\#[-a-z\\d_]*)?$", "i");
         return Boolean(pattern.test(str));
     }
 

@@ -12,7 +12,9 @@ class GuildManager extends Manager {
     /**
      * Complete documentation of the guild data structure: https://discord.com/developers/docs/resources/guild#guild-object-guild-structure
      */
-    constructor(guildObject, client) {
+    constructor(guildObject = {}, client = {}) {
+        if (typeof client != "object" || !client.token) throw new Error("Client must be an object and have the key \"token\".");
+
         super(guildObject, client.token);
 
         this.roles = new Map();

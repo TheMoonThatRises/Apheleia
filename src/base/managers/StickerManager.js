@@ -5,7 +5,7 @@
 const Manager = require("../Manager");
 
 class StickerManager extends Manager {
-    constructor(stickerObject, token) {
+    constructor(stickerObject = {}, token = "") {
         super(stickerObject, token);
     }
 }

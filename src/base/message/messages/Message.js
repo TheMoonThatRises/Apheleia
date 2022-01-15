@@ -1,7 +1,10 @@
 "use strict";
 
-const Manager = require("../Manager");
-const UserManager = require("../managers/UserManager");
+const MenuConstructor = require("../interactions/MenuConstructor");
+const Manager = require("../../Manager");
+const UserManager = require("../../managers/UserManager");
+const ActionRow = require("../interactions/ActionRow");
+const ButtonConstructor = require("../interactions/ButtonConstructor");
 const Embed = require("./Embed");
 
 class Message extends Manager {
@@ -16,10 +19,14 @@ class Message extends Manager {
     constructor(messageObject, client) {
         super(messageObject, client.token);
 
-        this.guild = client.guilds.get(messageObject.guild_id);
         this.channel = client.channels.get(messageObject.channel_id);
+        this.guild = client.guilds.get(messageObject.guild_id);
 
-        this.author = (this.guild.members.get(messageObject.author.id)) ? this.guild.members.get(messageObject.author.id) : new UserManager(this.author);
+        if (!this.guild) client.guilds.forEach(guild => {
+            if (guild.channels.get(this.channel.id)) this.guild = guild;
+        });
+
+        this.author = this.guild.members.get(messageObject.author.id) ?? new UserManager(this.author);
 
         this.replyContent = new Message.ReplyContent(this.id, this.guild.id, this.channel.id);
 
@@ -31,7 +38,8 @@ class Message extends Manager {
         let data = {
             "content": "",
             "embeds": [],
-            message_reference: null // eslint-disable-line camelcase
+            "components": [],
+            "message_reference": null
         };
 
         if (typeof message == "object" && message.content) data = message;
@@ -41,8 +49,12 @@ class Message extends Manager {
                 if (content instanceof Embed) data.embeds.push({...content});
                 else if (typeof content == "string") data.content += content + "\n";
                 else if (content instanceof Message.ReplyContent) data.message_reference = content; // eslint-disable-line camelcase
+                else if (content instanceof ActionRow) data.components.push(content);
+                else if (content instanceof ButtonConstructor || content instanceof MenuConstructor) data.components.push(new ActionRow(content));
             }
         }
+
+        if (!data.content && data.components[0]) throw new Error("Content required for message components.");
 
         return data;
     }

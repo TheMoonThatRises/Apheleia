@@ -4,7 +4,10 @@ const Manager = require("../Manager");
 const RoleManager = require("./RoleManager");
 
 class UserManager extends Manager {
-    constructor(userObject, token, guildId = "") {
+    constructor(userObject = {}, token = "", guildId = "") {
+        if (Object.keys(userObject).length <= 0) throw new Error("UserObject must have at least one value.");
+        else if (guildId && (typeof guildId != "string" && typeof guildId != "bigint")) throw new Error("GuildId must be a string or bigint.");
+
         let {user} = userObject;
 
         if (!user) user = userObject;
@@ -28,7 +31,7 @@ class UserManager extends Manager {
             this.hoisted_role = userObject.hoisted_role; // eslint-disable-line camelcase
             this.deaf = userObject.deaf;
 
-            userObject.roles.forEach(role => this.roles.push(new RoleManager(role)));
+            userObject.roles.forEach(role => this.roles.push(new RoleManager(role, token)));
         } else if (this.owner) this.owner = new UserManager(this.owner, this.token);
     }
 }
