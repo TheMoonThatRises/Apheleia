@@ -40,7 +40,6 @@ class Embed {
 
   // Function from https://stackoverflow.com/a/5717133
   static validURL(str) {
-    // eslint-disable-next-line require-unicode-regexp
     const pattern = new RegExp(
       "^(https?:\\/\\/)?" +
         "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" +
@@ -98,7 +97,7 @@ class Embed {
         } is not a valid url!`
       );
     this.image.url = imageUrl;
-    this.image.proxy_url = proxyUrl; // eslint-disable-line camelcase
+    this.image.proxy_url = proxyUrl;
     this.image.width = width;
     this.image.height = height;
     return this;
@@ -115,7 +114,7 @@ class Embed {
         } is not a valid url!`
       );
     this.thumbnail.url = imageUrl;
-    this.thumbnail.proxy_url = proxyUrl; // eslint-disable-line camelcase
+    this.thumbnail.proxy_url = proxyUrl;
     this.thumbnail.width = width;
     this.thumbnail.height = height;
     return this;
@@ -132,9 +131,9 @@ class Embed {
         `${Embed.validURL(link) ? "ProxyLink" : "Link"} is not a valid url!`
       );
     this.author.name = name;
-    this.author.icon_url = iconUrl; // eslint-disable-line camelcase
+    this.author.icon_url = iconUrl;
     this.author.url = link;
-    this.author.proxy_icon_url = proxyLink; // eslint-disable-line camelcase
+    this.author.proxy_icon_url = proxyLink;
     return this;
   }
 
@@ -149,8 +148,8 @@ class Embed {
         } is not a valid url!`
       );
     this.footer.text = text;
-    this.footer.icon_url = iconUrl; // eslint-disable-line camelcase
-    this.footer.proxy_icon_url = proxyIconUrl; // eslint-disable-line camelcase
+    this.footer.icon_url = iconUrl;
+    this.footer.proxy_icon_url = proxyIconUrl;
     return this;
   }
 

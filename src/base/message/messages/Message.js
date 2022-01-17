@@ -8,9 +8,9 @@ const Embed = require("./Embed");
 class Message extends Manager {
   static ReplyContent = class {
     constructor(messageId, guildId, channelId) {
-      this.message_id = messageId; // eslint-disable-line camelcase
-      this.guild_id = guildId; // eslint-disable-line camelcase
-      this.channel_id = channelId; // eslint-disable-line camelcase
+      this.message_id = messageId;
+      this.guild_id = guildId;
+      this.channel_id = channelId;
     }
   };
 
@@ -57,7 +57,6 @@ class Message extends Manager {
         else if (typeof content === "string") data.content += `${content}\n`;
         else if (content instanceof Message.ReplyContent)
           data.message_reference = content;
-        // eslint-disable-line camelcase
         else if (content instanceof ActionRow) data.components.push(content);
         else if (
           content instanceof ButtonConstructor ||
@@ -65,7 +64,6 @@ class Message extends Manager {
         )
           data.components.push(new ActionRow(content));
         else if (typeof content === "object") {
-          // eslint-disable-next-line array-element-newline
           for (const [key, value] of Object.entries(content)) data[key] = value;
         }
       }

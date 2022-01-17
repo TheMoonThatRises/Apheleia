@@ -32,9 +32,8 @@ class UserManager extends Manager {
 
     if (userObject.user) {
       this.mute = userObject.mute;
-      // Camel-cases will be removed later
-      this.joined_at = userObject.joined_at; // eslint-disable-line camelcase
-      this.hoisted_role = userObject.hoisted_role; // eslint-disable-line camelcase
+      this.joined_at = userObject.joined_at;
+      this.hoisted_role = userObject.hoisted_role;
       this.deaf = userObject.deaf;
       this.roles = {
         add: async (roleId) =>

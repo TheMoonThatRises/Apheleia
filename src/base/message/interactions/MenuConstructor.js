@@ -68,7 +68,7 @@ class MenuConstructor extends Constructor {
   }
 
   setCustomId(id = "") {
-    this.custom_id = String(id); // eslint-disable-line camelcase
+    this.custom_id = String(id);
 
     return this;
   }
@@ -89,13 +89,13 @@ class MenuConstructor extends Constructor {
   }
 
   setMinValues(min = 1) {
-    this.min_vales = Number(min); // eslint-disable-line camelcase
+    this.min_vales = Number(min);
 
     return this;
   }
 
   setMaxValues(max = 1) {
-    this.max_values = Number(max); // eslint-disable-line camelcase
+    this.max_values = Number(max);
 
     return this;
   }

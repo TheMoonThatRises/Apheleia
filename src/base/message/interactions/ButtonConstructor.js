@@ -47,7 +47,7 @@ class ButtonConstructor extends Constructor {
   }
 
   setCustomId(id = "") {
-    this.custom_id = String(id); // eslint-disable-line camelcase
+    this.custom_id = String(id);
 
     return this;
   }
