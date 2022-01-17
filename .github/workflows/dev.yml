@@ -2,7 +2,7 @@ name: Syntaxes
 on: [push, pull_request]
 jobs:
   lint:
-    name: ESLint
+    name: Prettier
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -17,5 +17,5 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run ESLint
-        run: npm run lint
+      - name: Run prettier
+        run: npm run prettier
