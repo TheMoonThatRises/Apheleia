@@ -150,7 +150,7 @@ class Client extends Base {
         if (this.options.oauth2CacheSelf)
           Object.assign(
             ready.user,
-            await this.api("oauth2/applications/@me").data
+            await this.api("oauth2/applications/@me")
           );
 
         this.user = new UserManager(ready.user, this.token);
@@ -160,7 +160,7 @@ class Client extends Base {
         if (this.options.forceCacheApplicationCommands) {
           const globalCommands = (
             await this.api(`${this.applications.selfBaseHTTPURL}commands`)
-          ).data;
+          );
           await globalCommands.forEach((command) =>
             this.applications.cache.set(command.id, command)
           );
@@ -171,7 +171,7 @@ class Client extends Base {
               await this.api(
                 `${this.applications.selfBaseHTTPURL}guilds/${guild.id}/commands`
               )
-            ).data;
+            );
             await guildCommands.forEach((command) =>
               this.applications.guilds.get(guild.id).set(command.id, command)
             );
