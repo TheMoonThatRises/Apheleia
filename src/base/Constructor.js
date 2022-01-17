@@ -1,19 +1,19 @@
-"use strict";
-
 class Constructor {
-    constructor(dOptions = {}, options = {}) {
-        Object.assign(options, dOptions);
-        Object.assign(this, options);
-    }
+  constructor(dOptions = {}, options = {}) {
+    Object.assign(options, dOptions);
+    Object.assign(this, options);
+  }
 
-    api(key = "", value = "") {
-        if (!key || typeof key != "string") throw new Error("Key must be a string.");
-        else if (value == "") throw new Error("Value must not be an empty string.");
+  api(key = "", value = "") {
+    if (!key || typeof key !== "string")
+      throw new Error("Key must be a string.");
+    else if (value === "")
+      throw new Error("Value must not be an empty string.");
 
-        this[key] = value;
+    this[key] = value;
 
-        return this;
-    }
+    return this;
+  }
 }
 
 module.exports = Constructor;

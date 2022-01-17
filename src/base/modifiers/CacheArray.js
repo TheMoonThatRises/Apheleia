@@ -1,19 +1,17 @@
-"use strict";
-
 class CacheArray extends Array {
-    constructor(cacheSize) {
-        super();
+  constructor(cacheSize) {
+    super();
 
-        this.cacheSize = cacheSize;
-    }
+    this.cacheSize = cacheSize;
+  }
 
-    push(item) {
-        super.push(item);
+  push(item) {
+    super.push(item);
 
-        if (this.length > this.cacheSize) this.pop();
+    if (this.length > this.cacheSize) this.pop();
 
-        return this;
-    }
+    return this;
+  }
 }
 
 module.exports = CacheArray;
