@@ -1,4 +1,6 @@
 class Constructor {
+  static emojiPartial = { name: "", id: "", animated: false };
+
   constructor(dOptions = {}, options = {}) {
     Object.assign(options, dOptions);
     Object.assign(this, options);

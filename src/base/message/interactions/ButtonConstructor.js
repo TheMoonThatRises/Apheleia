@@ -58,11 +58,16 @@ class ButtonConstructor extends Constructor {
     return this;
   }
 
-  setDisabled(disabled = false) {
-    if (typeof disabled !== "boolean")
-      throw new Error("Disabled must be boolean.");
+  setEmoji(emoji = Constructor.emojiPartial) {
+    emoji.animated = emoji.animated ?? false;
 
-    this.disabled = disabled;
+    this.emoji = emoji;
+
+    return this;
+  }
+
+  setDisabled() {
+    this.disabled = true;
 
     return this;
   }

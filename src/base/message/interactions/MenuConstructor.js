@@ -10,8 +10,6 @@ class MenuConstructor extends Constructor {
       default: false,
     };
 
-    static emoji = { name: "", id: "", animated: false };
-
     constructor(options = MenuConstructor.Options.options) {
       super();
 
@@ -37,8 +35,8 @@ class MenuConstructor extends Constructor {
       return this;
     }
 
-    setEmoji(emoji = MenuConstructor.Options.emoji) {
-      Object.assign(emoji, MenuConstructor.Options.emoji);
+    setEmoji(emoji = Constructor.emojiPartial) {
+      emoji.animated = emoji.animated ?? false;
 
       this.emoji = emoji;
 
@@ -100,8 +98,8 @@ class MenuConstructor extends Constructor {
     return this;
   }
 
-  setDisabled(isDisabled = false) {
-    this.disabled = Boolean(isDisabled);
+  setDisabled() {
+    this.disabled = true;
 
     return this;
   }
