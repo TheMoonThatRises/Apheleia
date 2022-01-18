@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "npm run prettier && node test/test.js",
-    "prettier": "npx prettier --write ./src"
+    "prettier": "npx prettier --write ./src",
+    "prettierCheck": "npx prettier ./src --check"
   },
   "repository": {
     "type": "git",
