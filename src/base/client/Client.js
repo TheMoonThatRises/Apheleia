@@ -148,18 +148,15 @@ class Client extends Base {
     this.on("READY", (data) =>
       EmitManager.manage(data, this, async (ready) => {
         if (this.options.oauth2CacheSelf)
-          Object.assign(
-            ready.user,
-            await this.api("oauth2/applications/@me")
-          );
+          Object.assign(ready.user, await this.api("oauth2/applications/@me"));
 
         this.user = new UserManager(ready.user, this.token);
         this.sessionID = ready.session_id;
         this.applications = new ApplicationManager(this.token, ready.user.id);
 
         if (this.options.forceCacheApplicationCommands) {
-          const globalCommands = (
-            await this.api(`${this.applications.selfBaseHTTPURL}commands`)
+          const globalCommands = await this.api(
+            `${this.applications.selfBaseHTTPURL}commands`
           );
           await globalCommands.forEach((command) =>
             this.applications.cache.set(command.id, command)
@@ -167,10 +164,8 @@ class Client extends Base {
 
           this.guilds.forEach(async (guild) => {
             this.applications.guilds.set(guild.id, new Map());
-            const guildCommands = (
-              await this.api(
-                `${this.applications.selfBaseHTTPURL}guilds/${guild.id}/commands`
-              )
+            const guildCommands = await this.api(
+              `${this.applications.selfBaseHTTPURL}guilds/${guild.id}/commands`
             );
             await guildCommands.forEach((command) =>
               this.applications.guilds.get(guild.id).set(command.id, command)

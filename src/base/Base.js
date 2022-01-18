@@ -56,17 +56,19 @@ class Base extends EventEmitter {
 
     if (Object.keys(data).length > 0) sendReq.data = { ...data };
 
-    return (await this.axios(sendReq).catch((err) => {
-      if (err.response.status === 429)
-        setTimeout(() => this.send(data), err.response.data.retry_after);
-      else if (err.response.status === 403)
-        throw new Error("Forbidden request.");
-      else if (err.response.status === 401)
-        throw new Error("Unauthorized request.");
-      else if (err.response.status === 404)
-        throw new Error("Endpoint not found.");
-      else throw new Error(`Unable to send api request:\n\n${err}`);
-    })).data;
+    return (
+      await this.axios(sendReq).catch((err) => {
+        if (err.response.status === 429)
+          setTimeout(() => this.send(data), err.response.data.retry_after);
+        else if (err.response.status === 403)
+          throw new Error("Forbidden request.");
+        else if (err.response.status === 401)
+          throw new Error("Unauthorized request.");
+        else if (err.response.status === 404)
+          throw new Error("Endpoint not found.");
+        else throw new Error(`Unable to send api request:\n\n${err}`);
+      })
+    ).data;
   }
 }
 
