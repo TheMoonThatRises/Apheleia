@@ -1,12 +1,17 @@
-"use strict";
-
 const Manager = require("../Manager");
 
 class RoleManager extends Manager {
-    constructor(roleObject, token) {
-        if (typeof roleObject == "object") super(roleObject, token);
-        else super({id: roleObject}, token);
-    }
+  constructor(roleObject = {}, guildId = "", token = "") {
+    const role = {};
+    if (typeof roleObject === "string") role.id = roleObject;
+    else Object.assign(role, roleObject);
+
+    super(role, token, `guilds/${guildId}/roles`);
+
+    this.delete = async () => await this.api(this.id, {}, "delete");
+    this.position = async (position) =>
+      await this.api("", { id: this.id, position }, "patch");
+  }
 }
 
 module.exports = RoleManager;
