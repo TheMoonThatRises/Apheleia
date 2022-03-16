@@ -1,13 +1,8 @@
-const ChannelManager = require("../managers/ChannelManager");
+const fs = require("node:fs");
 const Base = require("../Base");
-const UserManager = require("../managers/UserManager");
-const GuildManager = require("../managers/GuildManager");
-const EmitManager = require("./EmitManager");
-const Message = require("../message/messages/Message");
-const ApplicationManager = require("../managers/ApplicationManager");
 const Intents = require("./Intents");
-const EmitTypes = require("./EmitTypes");
-const InteractionManager = require("../managers/InteractionManager");
+const EmitTypes = require("../gateway/EmitTypes");
+const EmitManager = require("../EmitManager");
 
 class Client extends Base {
   static clientOptions = {
@@ -38,7 +33,7 @@ class Client extends Base {
     this.users = new Map();
     this.channels = new Map();
 
-    this.modifiedListeners();
+    this.eventListeners();
   }
 
   async login() {
@@ -144,119 +139,23 @@ class Client extends Base {
 
   // Client action functions
 
-  modifiedListeners() {
-    this.on("READY", (data) =>
-      EmitManager.manage(data, this, async (ready) => {
-        if (this.options.oauth2CacheSelf)
-          Object.assign(ready.user, await this.api("oauth2/applications/@me"));
+  eventListeners() {
+    const events = fs.readdirSync("./src/base/gateway/emits/", {
+      withFileTypes: true,
+    });
 
-        this.user = new UserManager(ready.user, this.token);
-        this.sessionID = ready.session_id;
-        this.applications = new ApplicationManager(this.token, ready.user.id);
+    for (const file of events) {
+      const event = require("../gateway/emits/" + file.name);
 
-        if (this.options.forceCacheApplicationCommands) {
-          const globalCommands = await this.api(
-            `${this.applications.selfBaseHTTPURL}commands`
-          );
-          await globalCommands.forEach((command) =>
-            this.applications.cache.set(command.id, command)
-          );
-
-          this.guilds.forEach(async (guild) => {
-            this.applications.guilds.set(guild.id, new Map());
-            const guildCommands = await this.api(
-              `${this.applications.selfBaseHTTPURL}guilds/${guild.id}/commands`
-            );
-            await guildCommands.forEach((command) =>
-              this.applications.guilds.get(guild.id).set(command.id, command)
-            );
-          });
-        }
-
-        return ready;
-      })
-    );
-
-    this.on("GUILD_CREATE", (data) =>
-      EmitManager.manage(data, this, (guild) => {
-        if (this.options.forceCacheGuildOnJoin)
-          this.guilds.set(guild.id, new GuildManager(guild, this));
-        if (this.options.forceCacheChannelOnJoin)
-          guild.channels.forEach((channel) =>
-            this.channels.set(
-              channel.id,
-              new ChannelManager(
-                channel,
-                this.options.messageCacheSize,
-                this.token
-              )
-            )
-          );
-        if (this.options.forceCacheMembersOnJoin)
-          guild.members.forEach((member) =>
-            !this.users.get(member.user.id)
-              ? this.users.set(
-                  member.user.id,
-                  new UserManager(member.user, this.token)
-                )
-              : null
-          );
-        return guild;
-      })
-    );
-
-    this.on("MESSAGE_CREATE", (data) =>
-      EmitManager.manage(data, this, (message) => {
-        const modifiedMessage = new Message(message, this);
-        if (this.options.cacheBotMessage || !modifiedMessage.author.bot)
-          this.channels
-            .get(message.channel_id)
-            .messageCache.push(modifiedMessage);
-        return modifiedMessage;
-      })
-    );
-
-    this.on("GUILD_MEMBER_ADD", (data) =>
-      EmitManager.manage(data, this, (member) => {
-        const modifiedMember = new UserManager(
-          member,
-          this.token,
-          this.member.guild.id
-        );
-
-        if (this.options.forceCacheMembersOnJoin)
-          this.users.set(modifiedMember.id, modifiedMember);
-
-        return modifiedMember;
-      })
-    );
-
-    this.on("CHANNEL_CREATE", (data) =>
-      EmitManager.manage(data, this, (channel) => {
-        const modifiedChannel = new ChannelManager(
-          channel,
-          this.options.messageCacheSize,
-          this.token
-        );
-
-        if (this.options.forceCacheChannelOnMake) {
-          this.channels.set(modifiedChannel.id, modifiedChannel);
-          this.guilds
-            .get(modifiedChannel.guild_id)
-            .channels.set(modifiedChannel.id, modifiedChannel);
-        }
-
-        return modifiedChannel;
-      })
-    );
-
-    this.on("INTERACTION_CREATE", (data) =>
-      EmitManager.manage(
-        data,
-        this,
-        (interaction) => new InteractionManager(interaction, this)
-      )
-    );
+      this.on(
+        file.name
+          .replace(".js", "")
+          .split(/(?=[A-Z])/)
+          .join("_")
+          .toUpperCase(),
+        (data) => EmitManager(data, this, event)
+      );
+    }
   }
 }
 
