@@ -7,7 +7,7 @@ class Base extends EventEmitter {
 
     super();
 
-    const discordApiVersion = 10;
+    const discordApiVersion = 9;
 
     Object.defineProperties(this, {
       discordApiVersion: {
