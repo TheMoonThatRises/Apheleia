@@ -22,13 +22,15 @@ module.exports = class Message extends Manager {
 
     if (!this.guild) {
       client.guilds.forEach((guild) => {
-        if (guild.channels.get(this.channel.id)) this.guild = guild;
+        if (guild.channels.get(this.channel.id)) {
+          this.guild = guild;
+        }
       });
     }
 
     this.author =
       this.guild.members.get(messageObject.author.id) ??
-      new UserManager(this.author);
+      new UserManager(this.author, this.token);
 
     this.replyContent = new Message.ReplyContent(
       this.id,
@@ -49,28 +51,36 @@ module.exports = class Message extends Manager {
       message_reference: null,
     };
 
-    if (typeof message === "object" && message.content) data = message;
-    else if (message instanceof Embed) data.embeds.push(message);
-    else {
+    if (typeof message === "object" && message.content) {
+      data = message;
+    } else if (message instanceof Embed) {
+      data.embeds.push(message);
+    } else {
       for (const content of message) {
-        if (content instanceof Embed) data.embeds.push({ ...content });
-        else if (typeof content === "string") data.content += `${content}\n`;
-        else if (content instanceof Message.ReplyContent)
+        if (content instanceof Embed) {
+          data.embeds.push({ ...content });
+        } else if (typeof content === "string") {
+          data.content += `${content}\n`;
+        } else if (content instanceof Message.ReplyContent) {
           data.message_reference = content;
-        else if (content instanceof ActionRow) data.components.push(content);
-        else if (
+        } else if (content instanceof ActionRow) {
+          data.components.push(content);
+        } else if (
           content instanceof ButtonConstructor ||
           content instanceof MenuConstructor
-        )
+        ) {
           data.components.push(new ActionRow(content));
-        else if (typeof content === "object") {
-          for (const [key, value] of Object.entries(content)) data[key] = value;
+        } else if (typeof content === "object") {
+          for (const [key, value] of Object.entries(content)) {
+            data[key] = value;
+          }
         }
       }
     }
 
-    if (!data.content && data.components[0])
+    if (!data.content && data.components[0]) {
       throw new Error("Content required for message components.");
+    }
 
     return data;
   }

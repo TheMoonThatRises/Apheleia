@@ -72,8 +72,9 @@ module.exports = class MenuConstructor extends Constructor {
   }
 
   addOption(option = MenuConstructor.Options) {
-    if (!(option instanceof MenuConstructor.Options))
+    if (!(option instanceof MenuConstructor.Options)) {
       throw new Error("Option must be instance of MenuConstructor.Options.");
+    }
 
     this.options.push(option);
 

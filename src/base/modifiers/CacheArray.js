@@ -8,7 +8,9 @@ module.exports = class CacheArray extends Array {
   push(item) {
     super.push(item);
 
-    if (this.length > this.cacheSize) this.pop();
+    if (this.length > this.cacheSize) {
+      this.pop();
+    }
 
     return this;
   }

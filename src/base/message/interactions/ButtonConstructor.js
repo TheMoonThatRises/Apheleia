@@ -27,13 +27,14 @@ module.exports = class ButtonConstructor extends Constructor {
   }
 
   setStyle(style = ButtonConstructor.PRIMARY) {
-    if (typeof style !== "number" && typeof style !== "string")
+    if (typeof style !== "number" && typeof style !== "string") {
       throw new Error("Style must be either a number or string.");
-    else if (
+    } else if (
       Number(style) < ButtonConstructor.PRIMARY ||
       Number(style) > ButtonConstructor.LINK
-    )
+    ) {
       throw new Error("Style must be between 1 and 5");
+    }
 
     this.style = Number(style);
 

@@ -4,9 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "npm run prettier && node test/test.js",
+    "test": "npm run eslint && npm run prettier && node test/test.js",
+    "eslint": "npx eslint --fix ./src ./test",
+    "eslintCheck": "npx eslint ./src ./test",
     "prettier": "npx prettier --write ./src ./test",
-    "prettierCheck": "npx prettier --check ./src ./test"
+    "prettierCheck": "npx prettier --check ./src ./test",
+    "lintCheck": "npm run eslintCheck && npm run prettierCheck"
   },
   "repository": {
     "type": "git",
@@ -25,6 +28,7 @@
   },
   "devDependencies": {
     "dotenv": "^10.0.0",
+    "eslint": "^8.31.0",
     "prettier": "2.5.1"
   }
 }

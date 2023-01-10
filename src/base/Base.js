@@ -2,8 +2,9 @@ const EventEmitter = require("node:events");
 
 module.exports = class Base extends EventEmitter {
   constructor(token = "", baseEndpoint = "") {
-    if (!token || (typeof token !== "string" && typeof token !== "bigint"))
-      throw new Error("Token must be a string or bigint.");
+    if (!token || (typeof token !== "string" && typeof token !== "bigint")) {
+      throw new Error('Token must be a string or bigint. Got: "' + token + '"');
+    }
 
     super();
 
@@ -44,7 +45,9 @@ module.exports = class Base extends EventEmitter {
   }
 
   async api(endpoint = "", data = {}, method = "get") {
-    if (!method) throw new Error("Method required.");
+    if (!method) {
+      throw new Error("Method required.");
+    }
 
     const sendReq = {
       method,
@@ -54,19 +57,23 @@ module.exports = class Base extends EventEmitter {
       headers: this.headers,
     };
 
-    if (Object.keys(data).length > 0) sendReq.data = { ...data };
+    if (Object.keys(data).length > 0) {
+      sendReq.data = { ...data };
+    }
 
     return (
       await this.axios(sendReq).catch((err) => {
-        if (err.response.status === 429)
+        if (err.response.status === 429) {
           setTimeout(() => this.send(data), err.response.data.retry_after);
-        else if (err.response.status === 403)
+        } else if (err.response.status === 403) {
           throw new Error("Forbidden request.");
-        else if (err.response.status === 401)
+        } else if (err.response.status === 401) {
           throw new Error("Unauthorized request.");
-        else if (err.response.status === 404)
+        } else if (err.response.status === 404) {
           throw new Error("Endpoint not found.");
-        else throw new Error(`Unable to send api request:\n\n${err}`);
+        } else {
+          throw new Error(`Unable to send api request:\n\n${err}`);
+        }
       })
     ).data;
   }

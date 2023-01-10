@@ -3,8 +3,11 @@ const Manager = require("../Manager");
 module.exports = class RoleManager extends Manager {
   constructor(roleObject = {}, guildId = "", token = "") {
     const role = {};
-    if (typeof roleObject === "string") role.id = roleObject;
-    else Object.assign(role, roleObject);
+    if (typeof roleObject === "string") {
+      role.id = roleObject;
+    } else {
+      Object.assign(role, roleObject);
+    }
 
     super(role, token, `guilds/${guildId}/roles`);
 

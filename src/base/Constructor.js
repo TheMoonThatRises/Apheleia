@@ -7,10 +7,11 @@ module.exports = class Constructor {
   }
 
   api(key = "", value = "") {
-    if (!key || typeof key !== "string")
+    if (!key || typeof key !== "string") {
       throw new Error("Key must be a string.");
-    else if (value === "")
+    } else if (value === "") {
       throw new Error("Value must not be an empty string.");
+    }
 
     this[key] = value;
 

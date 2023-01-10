@@ -64,10 +64,11 @@ module.exports = class Embed {
 
   setColor(color = "") {
     let findColor = color;
-    if (!color.startsWith("#"))
+    if (!color.startsWith("#")) {
       findColor = namedColors.find(
         (fColor) => fColor.name.toLowerCase() === findColor.toLowerCase()
       ).hex;
+    }
     this.color = parseInt(findColor.replace(/^#/u, ""), 16);
     return this;
   }
@@ -90,12 +91,13 @@ module.exports = class Embed {
     if (
       !Embed.validURL(imageUrl) ||
       (!Embed.validURL(proxyUrl) && proxyUrl !== "")
-    )
+    ) {
       throw new Error(
         `${
           Embed.validURL(imageUrl) ? "ProxyUrl" : "ImageUrl"
         } is not a valid url!`
       );
+    }
     this.image.url = imageUrl;
     this.image.proxy_url = proxyUrl;
     this.image.width = width;
@@ -107,12 +109,13 @@ module.exports = class Embed {
     if (
       !Embed.validURL(imageUrl) ||
       (!Embed.validURL(proxyUrl) && proxyUrl !== "")
-    )
+    ) {
       throw new Error(
         `${
           Embed.validURL(imageUrl) ? "ProxyUrl" : "ImageUrl"
         } is not a valid url!`
       );
+    }
     this.thumbnail.url = imageUrl;
     this.thumbnail.proxy_url = proxyUrl;
     this.thumbnail.width = width;
@@ -121,15 +124,16 @@ module.exports = class Embed {
   }
 
   setAuthor(name = "", iconUrl = "", link = "", proxyLink = "") {
-    if (!Embed.validURL(iconUrl) && iconUrl !== "")
+    if (!Embed.validURL(iconUrl) && iconUrl !== "") {
       throw new Error("IconUrl is not a valid url!");
-    else if (
+    } else if (
       (!Embed.validURL(link) && link !== "") ||
       (!Embed.validURL(proxyLink) && proxyLink !== "")
-    )
+    ) {
       throw new Error(
         `${Embed.validURL(link) ? "ProxyLink" : "Link"} is not a valid url!`
       );
+    }
     this.author.name = name;
     this.author.icon_url = iconUrl;
     this.author.url = link;
@@ -141,12 +145,13 @@ module.exports = class Embed {
     if (
       (!Embed.validURL(iconUrl) && iconUrl !== "") ||
       (!Embed.validURL(proxyIconUrl) && proxyIconUrl !== "")
-    )
+    ) {
       throw new Error(
         `${
           Embed.validURL(iconUrl) ? "ProxyIconUrl" : "IconUrl"
         } is not a valid url!`
       );
+    }
     this.footer.text = text;
     this.footer.icon_url = iconUrl;
     this.footer.proxy_icon_url = proxyIconUrl;

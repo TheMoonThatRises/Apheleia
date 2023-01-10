@@ -3,18 +3,21 @@ const RoleManager = require("./RoleManager");
 
 module.exports = class UserManager extends Manager {
   constructor(userObject = {}, token = "", guildId = "") {
-    if (Object.keys(userObject).length <= 0)
+    if (Object.keys(userObject).length <= 0) {
       throw new Error("UserObject must have at least one value.");
-    else if (
+    } else if (
       guildId &&
       typeof guildId !== "string" &&
       typeof guildId !== "bigint"
-    )
+    ) {
       throw new Error("GuildId must be a string or bigint.");
+    }
 
     let { user } = userObject;
 
-    if (!user) user = userObject;
+    if (!user) {
+      user = userObject;
+    }
 
     super(user, token);
 
@@ -22,12 +25,13 @@ module.exports = class UserManager extends Manager {
 
     if (this.avatar || this.avatar == null) {
       this.avatarURL = "https://cdn.discordapp.com/";
-      if (this.avatar == null)
+      if (this.avatar == null) {
         this.avatarURL += `embed/avatars/${this.discriminator % 5}.png`;
-      else if (!userObject.user)
+      } else if (!userObject.user) {
         this.avatarURL += `avatars/${this.id}/${this.avatar}.png`;
-      else
+      } else {
         this.avatarURL += `guilds/${guildId}/users/${this.id}/avatars/${this.avatar}.png`;
+      }
     }
 
     if (userObject.user) {
@@ -63,6 +67,8 @@ module.exports = class UserManager extends Manager {
       userObject.roles.forEach((role) =>
         this.roles.cache.set(role, new RoleManager(role, guildId, token))
       );
-    } else if (this.owner) this.owner = new UserManager(this.owner, this.token);
+    } else if (this.owner) {
+      this.owner = new UserManager(this.owner, this.token);
+    }
   }
 };

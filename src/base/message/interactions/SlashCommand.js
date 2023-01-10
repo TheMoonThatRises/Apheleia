@@ -70,16 +70,19 @@ module.exports = class SlashCommand extends Constructor {
     required = true,
     ...choices
   ) {
-    for (const choice of choices)
-      if (!(choice instanceof SlashCommand.Options))
+    for (const choice of choices) {
+      if (!(choice instanceof SlashCommand.Options)) {
         throw new Error("Choices must be of type Choice.");
-    if (typeof type !== "number" && typeof type !== "string")
+      }
+    }
+    if (typeof type !== "number" && typeof type !== "string") {
       throw new Error("Type must either a number or a string.");
-    else if (
+    } else if (
       Number(type) < SlashCommand.SUB_COMMAND ||
       Number(type) > SlashCommand.NUMBER
-    )
+    ) {
       throw new Error("Type must be between 1 and 10.");
+    }
 
     this.options.push({
       name: String(name),
@@ -93,14 +96,17 @@ module.exports = class SlashCommand extends Constructor {
   }
 
   addPermission(id = 0n, type = SlashCommand.PERMISSION_ROLE) {
-    if (!this.permissions) this.permissions = [];
+    if (!this.permissions) {
+      this.permissions = [];
+    }
 
-    if (typeof id !== "bigint" && typeof id !== "string")
+    if (typeof id !== "bigint" && typeof id !== "string") {
       throw new Error("Id must be either a bigint or string.");
-    else if (typeof type !== "number" && typeof type !== "string")
+    } else if (typeof type !== "number" && typeof type !== "string") {
       throw new Error("Type must be either a number or string.");
-    else if (Number(type) != 0 && Number(type) != 1)
+    } else if (Number(type) != 0 && Number(type) != 1) {
       throw new Error("Type must be either 0 or 1.");
+    }
 
     this.permissions.push({
       id: Number(id),

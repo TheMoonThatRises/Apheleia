@@ -12,9 +12,11 @@ module.exports = class ApplicationManager extends Base {
   async create(slashCommand = new SlashCommand(), guildID = 0) {
     let endpoint = this.selfBaseHTTPURL;
     if (guildID) {
-      if (typeof guildID !== "bigint" && typeof guildID !== "string")
+      if (typeof guildID !== "bigint" && typeof guildID !== "string") {
         throw new Error("Guild id must be a bigint or string.");
-      else endpoint = `guilds/${guildID}/`;
+      } else {
+        endpoint = `guilds/${guildID}/`;
+      }
     }
 
     endpoint += "commands";

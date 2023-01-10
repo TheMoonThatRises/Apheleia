@@ -2,8 +2,9 @@ const UserManager = require("../../managers/UserManager");
 const ApplicationManager = require("../../managers/ApplicationManager");
 
 module.exports = async (client, ready) => {
-  if (client.options.oauth2CacheSelf)
+  if (client.options.oauth2CacheSelf) {
     Object.assign(ready.user, await client.api("oauth2/applications/@me"));
+  }
 
   client.user = new UserManager(ready.user, client.token);
   client.sessionID = ready.session_id;

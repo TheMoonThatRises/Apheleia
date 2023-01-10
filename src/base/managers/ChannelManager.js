@@ -4,8 +4,9 @@ const Message = require("../message/messages/Message");
 
 module.exports = class ChannelManager extends Manager {
   constructor(channelObject = {}, messageCacheSize = 10, token = "") {
-    if (messageCacheSize <= 0)
+    if (messageCacheSize <= 0) {
       throw new Error("MessageCacheSize must be larger than 0.");
+    }
 
     super(channelObject, token, `channels/${channelObject.id}/`);
 

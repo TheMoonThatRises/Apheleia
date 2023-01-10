@@ -18,7 +18,9 @@ module.exports = class InteractionManager extends Manager {
     );
     this.channel = client.channels.get(interaction.channel_id);
     this.guild = client.guilds.get(interaction.guild_id);
-    if (this.message) client.message = new Message(interaction.message, client);
+    if (this.message) {
+      client.message = new Message(interaction.message, client);
+    }
 
     this.baseWebhook = `webhooks/${client.user.id}/${interaction.data.token}/messages/`;
     this.baseInteraction = `interactions/${interaction.data.id}/${interaction.data.token}/callback`;

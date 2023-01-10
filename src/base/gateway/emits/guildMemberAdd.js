@@ -7,8 +7,9 @@ module.exports = async (client, member) => {
     client.member.guild.id
   );
 
-  if (client.options.forceCacheMembersOnJoin)
+  if (client.options.forceCacheMembersOnJoin) {
     client.users.set(modifiedMember.id, modifiedMember);
+  }
 
   return modifiedMember;
 };
