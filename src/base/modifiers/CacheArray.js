@@ -1,4 +1,4 @@
-class CacheArray extends Array {
+module.exports = class CacheArray extends Array {
   constructor(cacheSize) {
     super();
 
@@ -12,6 +12,4 @@ class CacheArray extends Array {
 
     return this;
   }
-}
-
-module.exports = CacheArray;
+};

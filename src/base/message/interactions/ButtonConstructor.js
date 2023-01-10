@@ -1,6 +1,6 @@
 const Constructor = require("../../Constructor");
 
-class ButtonConstructor extends Constructor {
+module.exports = class ButtonConstructor extends Constructor {
   static PRIMARY = 1;
 
   static SECONDARY = 2;
@@ -71,6 +71,4 @@ class ButtonConstructor extends Constructor {
 
     return this;
   }
-}
-
-module.exports = ButtonConstructor;
+};

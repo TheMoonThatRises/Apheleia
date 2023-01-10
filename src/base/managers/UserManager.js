@@ -1,7 +1,7 @@
 const Manager = require("../Manager");
 const RoleManager = require("./RoleManager");
 
-class UserManager extends Manager {
+module.exports = class UserManager extends Manager {
   constructor(userObject = {}, token = "", guildId = "") {
     if (Object.keys(userObject).length <= 0)
       throw new Error("UserObject must have at least one value.");
@@ -65,6 +65,4 @@ class UserManager extends Manager {
       );
     } else if (this.owner) this.owner = new UserManager(this.owner, this.token);
   }
-}
-
-module.exports = UserManager;
+};

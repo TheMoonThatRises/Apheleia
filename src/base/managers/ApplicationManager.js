@@ -1,7 +1,7 @@
 const Base = require("../Base");
 const SlashCommand = require("../message/interactions/SlashCommand");
 
-class ApplicationManager extends Base {
+module.exports = class ApplicationManager extends Base {
   constructor(token, clientID) {
     super(token, `applications/${clientID}/`);
 
@@ -21,6 +21,4 @@ class ApplicationManager extends Base {
 
     return await this.api(endpoint, slashCommand, "post");
   }
-}
-
-module.exports = ApplicationManager;
+};

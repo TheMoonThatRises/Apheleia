@@ -5,7 +5,7 @@ const RoleManager = require("./RoleManager");
 const StickerManager = require("./StickerManager");
 const UserManager = require("./UserManager");
 
-class GuildManager extends Manager {
+module.exports = class GuildManager extends Manager {
   /**
    * Complete documentation of the guild data structure: https://discord.com/developers/docs/resources/guild#guild-object-guild-structure
    */
@@ -49,6 +49,4 @@ class GuildManager extends Manager {
       this.stickers.set(sticker.id, new StickerManager(sticker, this.token))
     );
   }
-}
-
-module.exports = GuildManager;
+};

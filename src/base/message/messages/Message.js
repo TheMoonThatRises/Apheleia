@@ -5,7 +5,7 @@ const ActionRow = require("../interactions/ActionRow");
 const ButtonConstructor = require("../interactions/ButtonConstructor");
 const Embed = require("./Embed");
 
-class Message extends Manager {
+module.exports = class Message extends Manager {
   static ReplyContent = class {
     constructor(messageId, guildId, channelId) {
       this.message_id = messageId;
@@ -74,6 +74,4 @@ class Message extends Manager {
 
     return data;
   }
-}
-
-module.exports = Message;
+};

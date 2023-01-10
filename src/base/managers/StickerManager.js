@@ -3,10 +3,8 @@
 
 const Manager = require("../Manager");
 
-class StickerManager extends Manager {
+module.exports = class StickerManager extends Manager {
   constructor(stickerObject = {}, token = "") {
     super(stickerObject, token);
   }
-}
-
-module.exports = StickerManager;
+};

@@ -2,7 +2,7 @@
 
 const namedColors = require("color-name-list");
 
-class Embed {
+module.exports = class Embed {
   constructor(embed = {}) {
     this.type = "rich";
     this.title = "";
@@ -157,6 +157,4 @@ class Embed {
     this.timestamp = time;
     return this;
   }
-}
-
-module.exports = Embed;
+};

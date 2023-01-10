@@ -2,7 +2,7 @@ const Manager = require("../Manager");
 const UserManager = require("./UserManager");
 const Message = require("../message/messages/Message");
 
-class InteractionManager extends Manager {
+module.exports = class InteractionManager extends Manager {
   constructor(interaction = {}, client = {}) {
     interaction.data.id = interaction.id;
     interaction.data.token = interaction.token;
@@ -73,6 +73,4 @@ class InteractionManager extends Manager {
     this.getFollowup = async () =>
       await this.api(this.baseWebhook + this.followupMessageId, {}, "get");
   }
-}
-
-module.exports = InteractionManager;
+};

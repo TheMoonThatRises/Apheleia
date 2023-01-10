@@ -1,6 +1,6 @@
 const Constructor = require("../../Constructor");
 
-class SlashCommand extends Constructor {
+module.exports = class SlashCommand extends Constructor {
   static Options = class extends Constructor {
     static options = { name: "", value: "" };
 
@@ -110,6 +110,4 @@ class SlashCommand extends Constructor {
 
     return this;
   }
-}
-
-module.exports = SlashCommand;
+};

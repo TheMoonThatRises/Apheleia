@@ -1,6 +1,6 @@
 const Constructor = require("../../Constructor");
 
-class MenuConstructor extends Constructor {
+module.exports = class MenuConstructor extends Constructor {
   static Options = class extends Constructor {
     static options = {
       label: "",
@@ -103,6 +103,4 @@ class MenuConstructor extends Constructor {
 
     return this;
   }
-}
-
-module.exports = MenuConstructor;
+};

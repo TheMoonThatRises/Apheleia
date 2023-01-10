@@ -2,7 +2,7 @@ const Manager = require("../Manager");
 const CacheArray = require("../modifiers/CacheArray");
 const Message = require("../message/messages/Message");
 
-class ChannelManager extends Manager {
+module.exports = class ChannelManager extends Manager {
   constructor(channelObject = {}, messageCacheSize = 10, token = "") {
     if (messageCacheSize <= 0)
       throw new Error("MessageCacheSize must be larger than 0.");
@@ -20,6 +20,4 @@ class ChannelManager extends Manager {
         "delete"
       );
   }
-}
-
-module.exports = ChannelManager;
+};

@@ -1,4 +1,4 @@
-class Constructor {
+module.exports = class Constructor {
   static emojiPartial = { name: "", id: "", animated: false };
 
   constructor(dOptions = {}, options = {}) {
@@ -16,6 +16,4 @@ class Constructor {
 
     return this;
   }
-}
-
-module.exports = Constructor;
+};

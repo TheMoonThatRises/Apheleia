@@ -1,37 +1,35 @@
-class Intents {
-  static GUILDS = 1 << 0;
+module.exports = {
+  GUILDS: 1 << 0,
 
-  static GUILD_MEMBERS = 1 << 1;
+  GUILD_MEMBERS: 1 << 1,
 
-  static GUILD_BANS = 1 << 2;
+  GUILD_BANS: 1 << 2,
 
-  static GUILD_EMOJIS_AND_STICKERS = 1 << 3;
+  GUILD_EMOJIS_AND_STICKERS: 1 << 3,
 
-  static GUILD_INTEGRATIONS = 1 << 4;
+  GUILD_INTEGRATIONS: 1 << 4,
 
-  static GUILD_WEBHOOKS = 1 << 5;
+  GUILD_WEBHOOKS: 1 << 5,
 
-  static GUILD_INVITES = 1 << 6;
+  GUILD_INVITES: 1 << 6,
 
-  static GUILD_VOICE_STATES = 1 << 7;
+  GUILD_VOICE_STATES: 1 << 7,
 
-  static GUILD_PRESENCES = 1 << 8;
+  GUILD_PRESENCES: 1 << 8,
 
-  static GUILD_MESSAGES = 1 << 9;
+  GUILD_MESSAGES: 1 << 9,
 
-  static GUILD_MESSAGE_REACTIONS = 1 << 10;
+  GUILD_MESSAGE_REACTIONS: 1 << 10,
 
-  static GUILD_MESSAGE_TYPING = 1 << 11;
+  GUILD_MESSAGE_TYPING: 1 << 11,
 
-  static DIRECT_MESSAGES = 1 << 12;
+  DIRECT_MESSAGES: 1 << 12,
 
-  static DIRECT_MESSAGE_REACTIONS = 1 << 13;
+  DIRECT_MESSAGE_REACTIONS: 1 << 13,
 
-  static DIRECT_MESSAGE_TYPING = 1 << 14;
+  DIRECT_MESSAGE_TYPING: 1 << 14,
 
-  static GUILD_SCHEDULED_EVENTS = 1 << 16;
+  GUILD_SCHEDULED_EVENTS: 1 << 16,
 
-  static ALL = 32767;
-}
-
-module.exports = Intents;
+  ALL: 32767,
+};

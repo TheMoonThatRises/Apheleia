@@ -1,6 +1,6 @@
 const Manager = require("../Manager");
 
-class RoleManager extends Manager {
+module.exports = class RoleManager extends Manager {
   constructor(roleObject = {}, guildId = "", token = "") {
     const role = {};
     if (typeof roleObject === "string") role.id = roleObject;
@@ -12,6 +12,4 @@ class RoleManager extends Manager {
     this.position = async (position) =>
       await this.api("", { id: this.id, position }, "patch");
   }
-}
-
-module.exports = RoleManager;
+};

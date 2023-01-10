@@ -1,13 +1,13 @@
 const EventEmitter = require("node:events");
 
-class Base extends EventEmitter {
+module.exports = class Base extends EventEmitter {
   constructor(token = "", baseEndpoint = "") {
     if (!token || (typeof token !== "string" && typeof token !== "bigint"))
       throw new Error("Token must be a string or bigint.");
 
     super();
 
-    const discordApiVersion = 9;
+    const discordApiVersion = 10;
 
     Object.defineProperties(this, {
       discordApiVersion: {
@@ -70,6 +70,4 @@ class Base extends EventEmitter {
       })
     ).data;
   }
-}
-
-module.exports = Base;
+};
