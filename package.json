@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "npm run prettier && node test/test.js",
-    "prettier": "npx prettier --write ./src",
-    "prettierCheck": "npx prettier ./src --check"
+    "prettier": "npx prettier --write ./src ./test",
+    "prettierCheck": "npx prettier --check ./src ./test"
   },
   "repository": {
     "type": "git",
@@ -20,8 +20,8 @@
   "homepage": "https://github.com/RangerEmerald/Apheleia#readme",
   "dependencies": {
     "axios": "^0.24.0",
-    "color-name-list": "^8.37.1",
-    "ws": "^8.4.0"
+    "color-name-list": "^8.38.0",
+    "ws": "^8.12.0"
   },
   "devDependencies": {
     "dotenv": "^10.0.0",
