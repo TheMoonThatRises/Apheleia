@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/RangerEmerald/Apheleia.git"
+    "url": "git+https://github.com/TheMoonThatRises/Apheleia.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/RangerEmerald/Apheleia/issues"
+    "url": "https://github.com/TheMoonThatRises/Apheleia/issues"
   },
-  "homepage": "https://github.com/RangerEmerald/Apheleia#readme",
+  "homepage": "https://github.com/TheMoonThatRises/Apheleia#readme",
   "dependencies": {
     "axios": "^0.24.0",
     "color-name-list": "^8.38.0",
