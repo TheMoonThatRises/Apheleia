@@ -2,20 +2,20 @@ name: Syntaxes
 on: [push, pull_request]
 jobs:
   lint:
-    name: Prettier
+    name: lint
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Install Node v17
+      - name: Install Node v19
         uses: actions/setup-node@v2
         with:
-          node-version: 17
+          node-version: 19
           cache: npm
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Run prettier
+      - name: Run lint
         run: npm run lintCheck
