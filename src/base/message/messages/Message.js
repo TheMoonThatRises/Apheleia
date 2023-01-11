@@ -45,10 +45,11 @@ module.exports = class Message extends Manager {
 
   static constructMessage(...message) {
     let data = {
+      tts: false,
       content: "",
       embeds: [],
       components: [],
-      message_reference: null,
+      attachments: [],
     };
 
     if (typeof message === "object" && message.content) {
