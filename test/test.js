@@ -90,9 +90,11 @@ client.on(EmitTypes.MESSAGE_CREATE, async (message) => {
 });
 
 client.on(EmitTypes.INTERACTION_CREATE, (interaction) => {
-  if (interaction.data.custom_id == "custom id cool") {
-    console.log(interaction);
-  }
+  interaction.defer();
+
+  setTimeout(() => {
+    interaction.editResponse("You sent: " + interaction.data.options[0].value);
+  }, 2000);
 });
 
 client.login();

@@ -28,7 +28,7 @@ module.exports = class Presence {
     this.updatePresence();
   }
 
-  constructor(client) {
+  constructor(client = {}) {
     this.client = client;
 
     this.newActivity = (
