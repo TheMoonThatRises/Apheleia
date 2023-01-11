@@ -1,12 +1,12 @@
 const fs = require("node:fs");
 const Base = require("../Base");
-const Intents = require("./Intents");
 const EmitTypes = require("../gateway/EmitTypes");
 const EmitManager = require("../EmitManager");
+const Presence = require("./Presence");
 
-class Client extends Base {
-  static clientOptions = {
-    intents: [Intents.ALL],
+module.exports = class Client extends Base {
+  static ClientOptions = {
+    intents: [],
     forceCacheMembersOnJoin: true,
     forceCacheMemberOnMessage: false,
     forceCacheGuildOnJoin: true,
@@ -16,14 +16,17 @@ class Client extends Base {
     messageCacheSize: 10,
     cacheBotMessage: false,
     forceCacheApplicationCommands: true,
+    offlineMemberThreshold: 50,
   };
 
-  constructor(token = "", options = Client.clientOptions) {
+  constructor(token = "", options = Client.ClientOptions) {
     super(token);
 
-    this.options = Object.assign(Client.clientOptions, options);
+    this.options = Object.assign(Client.ClientOptions, options);
 
-    if (this.options.intents.length <= 0) throw new Error("Intents requried.");
+    if (this.options.intents.length <= 0) {
+      throw new Error("Intents requried.");
+    }
 
     this.options.intents = Number(
       this.options.intents.reduce((addTo, add) => addTo + add)
@@ -32,6 +35,32 @@ class Client extends Base {
     this.guilds = new Map();
     this.users = new Map();
     this.channels = new Map();
+
+    this.heartbeat = () =>
+      (this.iheartbeat = setInterval(
+        () => this.sendGatewayEvent(1, this.seq ?? null),
+        this.heartbeatInterval
+      ));
+    this.identify = () =>
+      this.sendGatewayEvent(2, {
+        token: this.token,
+        intents: this.options.intents,
+        compress: false,
+        large_threshold: this.options.offlineMemberThreshold,
+        properties: {
+          $os: process.platform,
+          $browser: process.env.npm_package_name,
+          $device: process.env.npm_package_name,
+        },
+      });
+    this.reconnect = () =>
+      this.sendGatewayEvent(6, {
+        token: this.token,
+        session_id: this.sessionID,
+        seq: this.seq,
+      });
+
+    this.presence = new Presence(this);
 
     this.eventListeners();
   }
@@ -43,13 +72,15 @@ class Client extends Base {
       headers: this.headers,
     };
 
-    const gatewayResponse = await this.axios(getGateway).catch((err) => {
-      throw new Error(`Getting gateway error:\n\n${err}`);
-    });
+    this.gatewayResponse = (
+      await this.axios(getGateway).catch((err) => {
+        throw new Error(`Getting gateway error:\n\n${err}`);
+      })
+    ).data;
 
-    this.WSSURL = `${gatewayResponse.data.url}/?v=${this.discordApiVersion}&encoding=json`;
+    this.WSSURL = `${this.gatewayResponse.url}/?v=${this.discordApiVersion}&encoding=json`;
 
-    this.connection = new this.ws(this.WSSURL);
+    this.connection = new this.ws.WebSocket(this.WSSURL);
 
     this.connection.onmessage = (message) => {
       const data = JSON.parse(message.data);
@@ -62,8 +93,12 @@ class Client extends Base {
           this.seq = data.s;
           break;
         }
-        case 7:
+        case 1:
+          this.heartbeatInterval = data.d.heartbeat_interval;
+          clearInterval(this.iheartbeat);
+          this.heartbeat();
           break;
+        case 7:
         case 9:
           this.emit("error", `Invalid Session:\n\n${data}`);
           // Stops sending heartbeat
@@ -76,14 +111,15 @@ class Client extends Base {
           }, (Math.random() * 4 + 1) * 1000);
           break;
         case 10:
-          this.heartbeatInterval =
-            data.d.heartbeat_interval * (Math.random() + 0.5);
+          this.heartbeatInterval = data.d.heartbeat_interval;
 
-          // Sending Heartbeat
-          this.heartbeat();
+          setTimeout(() => {
+            // Sending Heartbeat
+            this.heartbeat();
 
-          // Identifying client
-          this.identify();
+            // Identifying client
+            this.identify();
+          }, this.heartbeatInterval * Math.random());
           break;
         default:
           break;
@@ -95,46 +131,15 @@ class Client extends Base {
     };
   }
 
-  heartbeat() {
-    this.iheartbeat = setInterval(() => {
+  sendGatewayEvent(op = -1, data = {}) {
+    if (this.connection && this.connection._readyState === 1) {
       this.connection.send(
         JSON.stringify({
-          op: 1,
-          d: this.seq ?? null,
+          op: op,
+          d: data,
         })
       );
-    }, this.heartbeatInterval);
-  }
-
-  identify() {
-    this.connection.send(
-      JSON.stringify({
-        op: 2,
-        d: {
-          token: this.token,
-          intents: this.options.intents,
-          compress: false,
-          properties: {
-            $os: process.platform,
-            $broconnectioner: process.env.npm_package_name,
-            $device: process.env.npm_package_name,
-          },
-        },
-      })
-    );
-  }
-
-  reconnect() {
-    this.connection.send(
-      JSON.stringify({
-        op: 6,
-        d: {
-          token: this.token,
-          session_id: this.sessionID,
-          seq: this.seq,
-        },
-      })
-    );
+    }
   }
 
   // Client action functions
@@ -157,6 +162,4 @@ class Client extends Base {
       );
     }
   }
-}
-
-module.exports = Client;
+};

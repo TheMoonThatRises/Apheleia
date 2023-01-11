@@ -6,8 +6,17 @@ const {
   SlashCommand,
   ButtonConstructor,
   MenuConstructor,
+  Intents,
 } = require("../index");
-const client = new Client(process.env.TEST_TOKEN, { oauth2CacheSelf: true });
+const client = new Client(process.env.TEST_TOKEN, {
+  intents: [
+    Intents.GUILD_MESSAGES,
+    Intents.GUILDS,
+    Intents.GUILD_MEMBERS,
+    Intents.MESSAGE_CONTENT,
+  ],
+  oauth2CacheSelf: true,
+});
 
 client.on(EmitTypes.READY, async () => {
   await client.applications.create(
@@ -24,11 +33,13 @@ client.on(EmitTypes.READY, async () => {
       )
   );
   console.log(`${client.user.tag} has logged in.`);
+  client.presence.setActivity("Visual Studio Code");
 });
 
 client.on(EmitTypes.MESSAGE_CREATE, async (message) => {
-  if (message.author.bot) return;
-  if (message.content == "t!hello")
+  if (message.author.bot) {
+    return;
+  } else if (message.content == "t!hello") {
     await message.reply(
       new Embed()
         .setTitle("Hello user")
@@ -39,8 +50,9 @@ client.on(EmitTypes.MESSAGE_CREATE, async (message) => {
         .setColor("green")
         .setThumbnail(client.user.avatarURL)
     );
-  else if (message.content == "t!delete") await message.channel.delete();
-  else if (message.content == "t!button")
+  } else if (message.content == "t!delete") {
+    await message.channel.delete();
+  } else if (message.content == "t!button") {
     await message.channel.send(
       "this happens to be a button :)",
       new ButtonConstructor()
@@ -52,9 +64,9 @@ client.on(EmitTypes.MESSAGE_CREATE, async (message) => {
         .setCustomId("custom id cool")
         .setStyle(ButtonConstructor.SUCCESS)
     );
-  else if (message.content == "t!regular")
+  } else if (message.content == "t!regular") {
     await message.channel.send("hello regular");
-  else if (message.content == "t!menu")
+  } else if (message.content == "t!menu") {
     await message.channel.send(
       "cool a menu",
       new MenuConstructor()
@@ -74,6 +86,7 @@ client.on(EmitTypes.MESSAGE_CREATE, async (message) => {
             .setValue("wwwwwww")
         )
     );
+  }
 });
 
 client.on(EmitTypes.INTERACTION_CREATE, (interaction) => {
@@ -83,3 +96,7 @@ client.on(EmitTypes.INTERACTION_CREATE, (interaction) => {
 });
 
 client.login();
+
+client.on("error", (message) => {
+  console.log(message);
+});
