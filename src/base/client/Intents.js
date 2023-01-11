@@ -29,7 +29,9 @@ module.exports = {
 
   DIRECT_MESSAGE_TYPING: 1 << 14,
 
+  MESSAGE_CONTENT: 1 << 15,
+
   GUILD_SCHEDULED_EVENTS: 1 << 16,
 
-  ALL: 32767,
+  ALL: Object.values(this).reduce((a, b) => a + b, 0),
 };
