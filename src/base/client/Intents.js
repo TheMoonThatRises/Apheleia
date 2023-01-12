@@ -33,5 +33,9 @@ module.exports = {
 
   GUILD_SCHEDULED_EVENTS: 1 << 16,
 
-  ALL: Object.values(this).reduce((a, b) => a + b, 0),
+  AUTO_MODERATION_CONFIGURATION: 1 << 20,
+
+  AUTO_MODERATION_EXECUTION: 1 << 21,
+
+  ALL: 3276799,
 };
